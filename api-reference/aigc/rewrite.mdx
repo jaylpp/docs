@@ -19,7 +19,7 @@ AIGC 文本改写接口是「熊猫论文」的核心服务，提供基于大语
 
 <ParamField header="Authorization" type="string" required>
   Bearer Token认证，支持API Key或JWT Token
-  
+
   ```
   Authorization: Bearer ak_xxxxxxxxxxxxxxxx
   ```
@@ -29,11 +29,11 @@ AIGC 文本改写接口是「熊猫论文」的核心服务，提供基于大语
 
 <ParamField body="content" type="string" required>
   要改写的文本内容
-  
+
   - **长度限制：** 1-20,000 字符
   - **编码：** UTF-8
   - **格式：** 纯文本，无需特殊格式
-  
+
   ```json
   "人工智能是研究如何使计算机模拟人类智能的一门科学。它包括机器学习、深度学习等多个领域。"
   ```
@@ -41,7 +41,7 @@ AIGC 文本改写接口是「熊猫论文」的核心服务，提供基于大语
 
 <ParamField body="service_type" type="string" required>
   服务类型，决定改写策略和价格
-  
+
   | 值 | 说明 | 适用场景 |
   |---|------|---------|
   | `ai-reduce-value` | 降AI超值版 | 高性价比，适合大批量改写 |
@@ -53,7 +53,7 @@ AIGC 文本改写接口是「熊猫论文」的核心服务，提供基于大语
 
 <ParamField body="rewrite_type" type="integer" required>
   改写类型ID，决定具体的改写算法
-  
+
   | ID | 名称 | 说明 |
   |----|------|------|
   | 1 | 标准改写 | 适合知网的AI降重/降AI改写 |
@@ -67,7 +67,7 @@ AIGC 文本改写接口是「熊猫论文」的核心服务，提供基于大语
   | 9 | 双降通用 | 通用场景同时降AI+降重 |
   | 10 | 双降GIZIDA | 格子达场景同时降AI+降重 |
   | 11 | 朱雀改写 | 朱雀平台AI降重/降AI改写 |
-  
+
   <Tip>
     **推荐选择：** 大多数场景使用 `rewrite_type=1`（标准改写）或 `rewrite_type=3`（通用改写）
   </Tip>
@@ -77,7 +77,7 @@ AIGC 文本改写接口是「熊猫论文」的核心服务，提供基于大语
 
 <ResponseField name="amount" type="number" required>
   本次消费金额（元）
-  
+
   ```json
   47.58
   ```
@@ -85,14 +85,14 @@ AIGC 文本改写接口是「熊猫论文」的核心服务，提供基于大语
 
 <ResponseField name="code" type="integer" required>
   响应状态码
-  
+
   - `200`: 改写成功
   - `500`: 改写失败
 </ResponseField>
 
 <ResponseField name="data" type="string" required>
   改写后的文本内容（成功时）或错误提示（失败时）
-  
+
   ```json
   "人工智能技术是专门研究让计算机系统能够模拟和实现人类智慧行为的学科领域。该领域涵盖了机器学习算法、深度神经网络等众多技术分支。"
   ```
@@ -100,7 +100,7 @@ AIGC 文本改写接口是「熊猫论文」的核心服务，提供基于大语
 
 <ResponseField name="message" type="string" required>
   响应消息
-  
+
   - 成功: `"改写成功"`
   - 欠费: `"处理完成, 因已欠费, 需充值回正后, 进入右侧「生成记录」页面查看结果!"`
   - 失败: `"处理失败: {错误原因}"`
@@ -111,7 +111,7 @@ AIGC 文本改写接口是「熊猫论文」的核心服务，提供基于大语
 <CodeGroup>
 
 ```bash cURL
-curl -X POST https://api.paperpanda.cn/api/v1/aigc/rewrite \
+curl -X POST https://paperpanda.cn/api/v1/aigc/rewrite \
   -H "Authorization: Bearer ak_xxxxxxxxxxxxxxxx" \
   -H "Content-Type: application/json" \
   -d '{
@@ -124,7 +124,7 @@ curl -X POST https://api.paperpanda.cn/api/v1/aigc/rewrite \
 ```python Python
 import requests
 
-url = "https://api.paperpanda.cn/api/v1/aigc/rewrite"
+url = "https://paperpanda.cn/api/v1/aigc/rewrite"
 headers = {
     "Authorization": "Bearer ak_xxxxxxxxxxxxxxxx",
     "Content-Type": "application/json"
@@ -151,7 +151,7 @@ const axios = require('axios');
 const rewriteText = async () => {
   try {
     const response = await axios.post(
-      'https://api.paperpanda.cn/api/v1/aigc/rewrite',
+      'https://paperpanda.cn/api/v1/aigc/rewrite',
       {
         content: '人工智能是研究如何使计算机模拟人类智能的一门科学。它包括机器学习、深度学习等多个领域。',
         service_type: 'ai-reduce-value',
@@ -166,7 +166,7 @@ const rewriteText = async () => {
     );
 
     const result = response.data;
-    
+
     if (result.code === 200) {
       console.log(`改写成功！消费: ${result.amount}元`);
       console.log(`改写结果: ${result.data}`);
@@ -189,8 +189,8 @@ import com.google.gson.Gson;
 public class AigcRewrite {
     public static void main(String[] args) throws Exception {
         String apiKey = "ak_xxxxxxxxxxxxxxxx";
-        String url = "https://api.paperpanda.cn/api/v1/aigc/rewrite";
-        
+        String url = "https://paperpanda.cn/api/v1/aigc/rewrite";
+
         // 构建请求体
         String requestBody = """
             {
@@ -199,7 +199,7 @@ public class AigcRewrite {
                 "rewrite_type": 1
             }
         """;
-        
+
         // 创建HTTP客户端
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -208,13 +208,13 @@ public class AigcRewrite {
             .header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(requestBody))
             .build();
-        
+
         // 发送请求
         HttpResponse<String> response = client.send(
-            request, 
+            request,
             HttpResponse.BodyHandlers.ofString()
         );
-        
+
         System.out.println("响应: " + response.body());
     }
 }
@@ -308,18 +308,18 @@ public class AigcRewrite {
 <AccordionGroup>
   <Accordion title="如何选择合适的改写类型？">
     **场景推荐：**
-    
+
     - 知网查重：选择 `rewrite_type=1` 或 `rewrite_type=7`
     - 维普查重：选择 `rewrite_type=2` 或 `rewrite_type=8`
     - 通用场景：选择 `rewrite_type=3` 或 `rewrite_type=9`
     - 英文文本：选择 `rewrite_type=4`
-    
+
     **性价比优先：** 使用 `service_type=ai-reduce-value`
   </Accordion>
 
   <Accordion title="如何处理大批量改写？">
     **建议方案：**
-    
+
     1. 将长文本分段（每段不超过5000字符）
     2. 使用队列管理改写任务
     3. 控制并发数（最多3个）
@@ -329,7 +329,7 @@ public class AigcRewrite {
 
   <Accordion title="如何提高改写质量？">
     **优化建议：**
-    
+
     - 确保原文语句通顺
     - 避免包含大量特殊符号
     - 合理控制文本长度
@@ -339,7 +339,7 @@ public class AigcRewrite {
 
   <Accordion title="如何避免欠费？">
     **预防措施：**
-    
+
     1. 调用前先查询余额
     2. 预估费用：`字数/1000 * 单价`
     3. 预留足够余额缓冲
@@ -364,5 +364,5 @@ public class AigcRewrite {
 遇到问题？我们随时为您提供帮助：
 
 - 📧 邮箱：support@paperpanda.cn
-- 📚 完整文档：https://api.paperpanda.cn/docs
+- 📚 完整文档：https://paperpanda.cn/docs
 - 💬 在线客服：平台右下角

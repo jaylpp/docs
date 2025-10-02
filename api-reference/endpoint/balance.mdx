@@ -19,7 +19,7 @@ description: '查询当前用户的账户余额信息，包括当前余额、累
 
 <ParamField header="Authorization" type="string" required>
   Bearer Token认证，支持API Key或JWT Token
-  
+
   ```
   Authorization: Bearer ak_xxxxxxxxxxxxxxxx
   ```
@@ -35,7 +35,7 @@ description: '查询当前用户的账户余额信息，包括当前余额、累
 
 <ResponseField name="user_id" type="integer" required>
   用户ID
-  
+
   ```json
   123
   ```
@@ -43,9 +43,9 @@ description: '查询当前用户的账户余额信息，包括当前余额、累
 
 <ResponseField name="current_balance" type="string" required>
   当前账户余额（元）
-  
+
   使用字符串格式保证精度，避免浮点数精度问题
-  
+
   ```json
   "158.50"
   ```
@@ -53,9 +53,9 @@ description: '查询当前用户的账户余额信息，包括当前余额、累
 
 <ResponseField name="total_recharged" type="string" required>
   累计充值金额（元）
-  
+
   用户注册以来的所有充值总和
-  
+
   ```json
   "500.00"
   ```
@@ -63,9 +63,9 @@ description: '查询当前用户的账户余额信息，包括当前余额、累
 
 <ResponseField name="total_consumed" type="string" required>
   累计消费金额（元）
-  
+
   用户注册以来的所有消费总和
-  
+
   ```json
   "341.50"
   ```
@@ -73,9 +73,9 @@ description: '查询当前用户的账户余额信息，包括当前余额、累
 
 <ResponseField name="created_at" type="string" required>
   账户创建时间（北京时间）
-  
+
   格式：ISO 8601
-  
+
   ```json
   "2025-01-15T10:30:00+08:00"
   ```
@@ -83,9 +83,9 @@ description: '查询当前用户的账户余额信息，包括当前余额、累
 
 <ResponseField name="updated_at" type="string" required>
   账户最后更新时间（北京时间）
-  
+
   每次充值或消费后更新
-  
+
   ```json
   "2025-09-30T14:20:00+08:00"
   ```
@@ -96,14 +96,14 @@ description: '查询当前用户的账户余额信息，包括当前余额、累
 <CodeGroup>
 
 ```bash cURL
-curl -X GET https://api.paperpanda.cn/api/v1/billing/balance \
+curl -X GET https://paperpanda.cn/api/v1/billing/balance \
   -H "Authorization: Bearer ak_xxxxxxxxxxxxxxxx"
 ```
 
 ```python Python
 import requests
 
-url = "https://api.paperpanda.cn/api/v1/billing/balance"
+url = "https://paperpanda.cn/api/v1/billing/balance"
 headers = {
     "Authorization": "Bearer ak_xxxxxxxxxxxxxxxx"
 }
@@ -122,7 +122,7 @@ const axios = require('axios');
 const getBalance = async () => {
   try {
     const response = await axios.get(
-      'https://api.paperpanda.cn/api/v1/billing/balance',
+      'https://paperpanda.cn/api/v1/billing/balance',
       {
         headers: {
           'Authorization': 'Bearer ak_xxxxxxxxxxxxxxxx'
@@ -131,7 +131,7 @@ const getBalance = async () => {
     );
 
     const balance = response.data;
-    
+
     console.log(`当前余额: ${balance.current_balance}元`);
     console.log(`累计充值: ${balance.total_recharged}元`);
     console.log(`累计消费: ${balance.total_consumed}元`);
@@ -151,8 +151,8 @@ import com.google.gson.Gson;
 public class GetBalance {
     public static void main(String[] args) throws Exception {
         String apiKey = "ak_xxxxxxxxxxxxxxxx";
-        String url = "https://api.paperpanda.cn/api/v1/billing/balance";
-        
+        String url = "https://paperpanda.cn/api/v1/billing/balance";
+
         // 创建HTTP客户端
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -160,13 +160,13 @@ public class GetBalance {
             .header("Authorization", "Bearer " + apiKey)
             .GET()
             .build();
-        
+
         // 发送请求
         HttpResponse<String> response = client.send(
-            request, 
+            request,
             HttpResponse.BodyHandlers.ofString()
         );
-        
+
         System.out.println("余额信息: " + response.body());
     }
 }
@@ -183,12 +183,12 @@ import (
 
 func main() {
     apiKey := "ak_xxxxxxxxxxxxxxxx"
-    url := "https://api.paperpanda.cn/api/v1/billing/balance"
-    
+    url := "https://paperpanda.cn/api/v1/billing/balance"
+
     // 创建请求
     req, _ := http.NewRequest("GET", url, nil)
     req.Header.Set("Authorization", "Bearer " + apiKey)
-    
+
     // 发送请求
     client := &http.Client{}
     resp, err := client.Do(req)
@@ -196,7 +196,7 @@ func main() {
         panic(err)
     }
     defer resp.Body.Close()
-    
+
     // 读取响应
     body, _ := ioutil.ReadAll(resp.Body)
     fmt.Println("余额信息:", string(body))
@@ -246,15 +246,15 @@ func main() {
 <AccordionGroup>
   <Accordion title="调用付费接口前检查余额">
     在调用 AIGC 改写等付费接口前，建议先查询余额：
-    
+
     ```python
     # 1. 查询余额
     balance_response = requests.get(balance_url, headers=headers)
     balance = float(balance_response.json()['current_balance'])
-    
+
     # 2. 预估费用
     estimated_cost = len(content) / 1000 * unit_price
-    
+
     # 3. 判断是否足够
     if balance >= estimated_cost:
         # 调用改写接口
@@ -266,26 +266,26 @@ func main() {
 
   <Accordion title="实现余额监控和预警">
     定期查询余额，实现余额预警功能：
-    
+
     ```python
     import time
-    
+
     def monitor_balance(threshold=50.0):
         """监控余额，低于阈值时发送预警"""
         while True:
             response = requests.get(balance_url, headers=headers)
             balance = float(response.json()['current_balance'])
-            
+
             if balance < threshold:
                 send_alert(f"余额不足预警！当前余额: {balance}元")
-            
+
             time.sleep(3600)  # 每小时检查一次
     ```
   </Accordion>
 
   <Accordion title="在界面实时显示余额">
     为用户提供清晰的余额显示：
-    
+
     ```javascript
     // 页面加载时获取余额
     async function loadBalance() {
@@ -293,13 +293,13 @@ func main() {
         headers: { 'Authorization': `Bearer ${apiKey}` }
       });
       const data = await response.json();
-      
+
       // 更新UI
-      document.getElementById('balance').innerText = 
+      document.getElementById('balance').innerText =
         `¥${data.current_balance}`;
-      document.getElementById('total-recharged').innerText = 
+      document.getElementById('total-recharged').innerText =
         `累计充值: ¥${data.total_recharged}`;
-      document.getElementById('total-consumed').innerText = 
+      document.getElementById('total-consumed').innerText =
         `累计消费: ¥${data.total_consumed}`;
     }
     ```
@@ -307,16 +307,16 @@ func main() {
 
   <Accordion title="计算可用服务次数">
     根据余额计算还能调用多少次服务：
-    
+
     ```python
     # 获取余额
     balance_response = requests.get(balance_url, headers=headers)
     balance = float(balance_response.json()['current_balance'])
-    
+
     # 假设单次改写平均费用 0.5 元
     average_cost = 0.5
     available_times = int(balance / average_cost)
-    
+
     print(f"当前余额可进行约 {available_times} 次改写")
     ```
   </Accordion>
@@ -330,9 +330,9 @@ func main() {
   ```python
   # ✅ 正确做法
   balance = Decimal(response.json()['current_balance'])
-  
+
   # ❌ 避免直接使用float（可能损失精度）
-  balance = float(response.json()['current_balance'])  
+  balance = float(response.json()['current_balance'])
   ```
 </Warning>
 
@@ -376,7 +376,7 @@ class BalanceCache:
         self.balance = None
         self.last_update = 0
         self.ttl = ttl
-    
+
     def get_balance(self):
         now = time.time()
         if not self.balance or (now - self.last_update) > self.ttl:
@@ -395,11 +395,11 @@ class BalanceCache:
 def get_balance_safe():
     """安全地获取余额，包含重试和错误处理"""
     max_retries = 3
-    
+
     for i in range(max_retries):
         try:
             response = requests.get(
-                balance_url, 
+                balance_url,
                 headers=headers,
                 timeout=10
             )
@@ -426,21 +426,21 @@ class BalanceMonitor {
     this.onUpdate = onUpdate;
     this.lastBalance = null;
   }
-  
+
   async start(interval = 30000) {  // 30秒检查一次
     setInterval(async () => {
       const balance = await this.fetchBalance();
-      
-      if (this.lastBalance && 
+
+      if (this.lastBalance &&
           balance.current_balance !== this.lastBalance.current_balance) {
         // 余额发生变化
         this.onUpdate(balance, this.lastBalance);
       }
-      
+
       this.lastBalance = balance;
     }, interval);
   }
-  
+
   async fetchBalance() {
     const response = await fetch('/api/v1/billing/balance', {
       headers: { 'Authorization': `Bearer ${this.apiKey}` }
@@ -491,7 +491,7 @@ monitor.start();
     # 预估计算
     average_chars = 5000  # 平均字符数
     price_per_1000 = 10   # 每千字价格（根据实际服务类型）
-    
+
     cost_per_rewrite = (average_chars / 1000) * price_per_1000
     available_times = int(balance / cost_per_rewrite)
     ```
@@ -507,5 +507,5 @@ monitor.start();
 遇到问题？我们随时为您提供帮助：
 
 - 📧 邮箱：support@paperpanda.cn
-- 📚 完整文档：https://api.paperpanda.cn/docs
+- 📚 完整文档：https://paperpanda.cn/docs
 - 💬 在线客服：平台右下角
