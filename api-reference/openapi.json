@@ -149,7 +149,7 @@
         }
       }
     },
-    "/api/v1/billing/balance": {
+    "/billing/balance": {
       "get": {
         "summary": "获取用户余额",
         "description": "查询当前用户的账户余额信息，包括当前余额、累计充值、累计消费等。",
