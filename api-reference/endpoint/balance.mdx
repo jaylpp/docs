@@ -458,23 +458,6 @@ const monitor = new BalanceMonitor(apiKey, (newBalance, oldBalance) => {
 monitor.start();
 ```
 
-## 相关接口
-
-<CardGroup cols={2}>
-  <Card title="充值记录" icon="credit-card" href="/api-reference/billing/recharge">
-    查看充值历史记录
-  </Card>
-  <Card title="消费记录" icon="receipt" href="/api-reference/billing/consumption">
-    查看消费历史记录
-  </Card>
-  <Card title="AIGC改写" icon="wand-magic-sparkles" href="/api-reference/aigc/rewrite">
-    使用余额进行文本改写
-  </Card>
-  <Card title="API密钥管理" icon="key" href="/api-reference/api-keys/list">
-    管理您的API密钥
-  </Card>
-</CardGroup>
-
 ## 常见问题
 
 <AccordionGroup>
@@ -490,7 +473,7 @@ monitor.start();
     ```python
     # 预估计算
     average_chars = 5000  # 平均字符数
-    price_per_1000 = 10   # 每千字价格（根据实际服务类型）
+    price_per_1000 = 2   # 每千字价格（根据实际服务类型）
 
     cost_per_rewrite = (average_chars / 1000) * price_per_1000
     available_times = int(balance / cost_per_rewrite)
@@ -507,5 +490,5 @@ monitor.start();
 遇到问题？我们随时为您提供帮助：
 
 - 📧 邮箱：support@paperpanda.cn
-- 📚 完整文档：https://paperpanda.cn/docs
+- 📚 完整文档：https://docs.paperpanda.cn
 - 💬 在线客服：平台右下角
