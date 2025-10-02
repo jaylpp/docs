@@ -1,33 +1,192 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'API 文档介绍'
+description: '熊猫论文 开放API平台 - 接口文档与使用指南'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## 欢迎使用 API
 
-## Welcome
-
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+熊猫论文，提供强大的 AIGC 文本改写服务和完善的账户管理功能。通过我们的 API，您可以轻松集成智能文本改写能力到您的应用中。
 
 <Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
+  title="查看 OpenAPI 规范"
+  icon="file-code"
+  href="https://github.com/paperpanda/api-docs/blob/main/openapi-paper-panda.json"
 >
-  View the OpenAPI specification file
+  查看完整的 OpenAPI 3.1 规范文件
 </Card>
 
-## Authentication
+## 核心功能
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+<CardGroup cols={2}>
+  <Card title="AIGC文本改写" icon="wand-magic-sparkles" href="/api-reference/endpoint/rewrite">
+    智能改写文本，支持降AI率、降重率等多种模式
+  </Card>
+  <Card title="账户余额查询" icon="wallet" href="/api-reference/endpoint/balance">
+    查询用户账户余额、充值和消费记录
+  </Card>
+</CardGroup>
+
+## 认证方式
+
+所有 API 接口均使用 **Bearer Token** 方式进行认证，支持以下两种认证令牌：
+
+### 1. API Key（推荐用于第三方集成）
+
+```bash
+curl https://api.paperpanda.cn/api/v1/aigc/rewrite \
+  -H "Authorization: Bearer ak_xxxxxxxxxxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "要改写的文本",
+    "service_type": "ai-reduce-value",
+    "rewrite_type": 1
+  }'
+```
+
+**如何获取 API Key？**
+
+1. 登录 Paper Panda 平台
+2. 进入"API密钥管理"页面
+3. 点击"创建API密钥"
+4. 保存生成的密钥（只显示一次！）
+
+### 2. JWT Token（用于Web端）
+
+```bash
+curl https://api.paperpanda.cn/api/v1/billing/balance \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json"
+```
+
+<Warning>
+  **重要提示：** API Key 只在创建时显示一次，请务必妥善保管。丢失后需重新生成。
+</Warning>
+
+## 请求限制
+
+| 限制类型 | 默认值 | 说明 |
+|---------|--------|------|
+| QPM（每分钟请求数） | 10次/分钟 | 可通过申请提升配额 |
+| 单次文本长度 | 20,000字符 | AIGC改写接口 |
+| 并发请求数 | 3个 | 同一用户同时处理的请求数 |
+
+<Tip>
+  如需提升 QPM 配额，请在"API密钥管理"页面申请升级，管理员将在1-3个工作日内审核。
+</Tip>
+
+## 计费说明
+
+### 按字数计费
+
+AIGC改写服务按照实际处理的字符数进行计费：
+
+- **计费单位：** 千字符（1000字符）
+- **计费规则：** 不同服务类型价格不同
+- **扣费时机：** 改写成功后自动扣费
+- **余额不足：** 预估费用超过余额时拒绝服务
+
+### 服务类型价格
+
+| 服务类型 | 说明 | 参考价格 |
+|---------|------|---------|
+| ai-reduce-value | 降AI超值版 | 按字数计费 |
+| ai-reduce | 降AI标准版 | 按字数计费 |
+| duplicate-reduce | 降重 | 按字数计费 |
+| ai-duplicate | 降AI+降重 | 按字数计费 |
+
+<Note>
+  具体价格请在平台配置中查看，价格可能根据改写类型有所不同。
+</Note>
+
+## 响应格式
+
+所有接口统一返回 JSON 格式：
+
+### 成功响应
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+{
+  "code": 200,
+  "data": { ... },
+  "message": "成功"
+}
 ```
+
+### 错误响应
+
+```json
+{
+  "detail": "错误详情描述"
+}
+```
+
+### 常见错误码
+
+| HTTP状态码 | 说明 |
+|-----------|------|
+| 200 | 请求成功 |
+| 400 | 请求参数错误（如余额不足） |
+| 401 | 未授权（API Key无效或过期） |
+| 403 | 禁止访问（接口未开放） |
+| 429 | 请求过于频繁（超出QPM限制） |
+| 500 | 服务器内部错误 |
+
+## 最佳实践
+
+<AccordionGroup>
+  <Accordion title="如何处理并发请求？">
+    系统限制每个用户同时处理3个请求。建议：
+    
+    - 使用队列管理大批量改写任务
+    - 收到429错误后，等待1分钟再重试
+    - 合理分配QPM配额
+  </Accordion>
+
+  <Accordion title="如何避免余额不足？">
+    - 在调用前先查询余额
+    - 预估费用并预留足够余额
+    - 设置余额预警通知
+    - 及时充值
+  </Accordion>
+
+  <Accordion title="如何提高API调用成功率？">
+    - 妥善保管API Key
+    - 定期检查密钥状态
+    - 合理设置重试机制
+    - 处理各类错误响应
+  </Accordion>
+
+  <Accordion title="如何优化改写质量？">
+    - 选择合适的改写类型
+    - 文本长度控制在合理范围
+    - 避免特殊字符和格式
+    - 使用适合场景的服务类型
+  </Accordion>
+</AccordionGroup>
+
+## 技术支持
+
+<CardGroup cols={2}>
+  <Card title="API文档" icon="book" href="https://api.paperpanda.cn/docs">
+    查看完整的交互式API文档
+  </Card>
+  <Card title="技术支持" icon="envelope" href="mailto:support@paperpanda.cn">
+    联系我们的技术团队
+  </Card>
+</CardGroup>
+
+## 更新日志
+
+### v2.0.0 (2025-09-30)
+
+- ✅ 发布AIGC文本改写API
+- ✅ 发布用户余额查询API
+- ✅ 支持API Key认证
+- ✅ 支持QPM限流控制
+- ✅ 集成自动计费系统
+
+---
+
+**文档版本：** v1.0.0  
+**最后更新：** 2025年9月30日  
+**维护团队：** Paper Panda开发团队

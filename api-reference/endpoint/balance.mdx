@@ -1,0 +1,511 @@
+---
+title: '查询用户余额'
+openapi: 'GET /api/v1/billing/balance'
+description: '查询当前用户的账户余额信息，包括当前余额、累计充值、累计消费等'
+---
+
+## 接口说明
+
+用户余额查询接口提供账户的完整财务信息，帮助您实时了解账户状态。
+
+### 主要特性
+
+- **实时余额：** 查询当前可用余额
+- **累计统计：** 显示累计充值和消费金额
+- **快速响应：** 无需复杂计算，直接返回结果
+- **安全认证：** 支持API Key和JWT双重认证
+
+## 认证方式
+
+<ParamField header="Authorization" type="string" required>
+  Bearer Token认证，支持API Key或JWT Token
+  
+  ```
+  Authorization: Bearer ak_xxxxxxxxxxxxxxxx
+  ```
+</ParamField>
+
+## 请求参数
+
+<Note>
+  此接口无需请求参数，直接GET请求即可。
+</Note>
+
+## 响应参数
+
+<ResponseField name="user_id" type="integer" required>
+  用户ID
+  
+  ```json
+  123
+  ```
+</ResponseField>
+
+<ResponseField name="current_balance" type="string" required>
+  当前账户余额（元）
+  
+  使用字符串格式保证精度，避免浮点数精度问题
+  
+  ```json
+  "158.50"
+  ```
+</ResponseField>
+
+<ResponseField name="total_recharged" type="string" required>
+  累计充值金额（元）
+  
+  用户注册以来的所有充值总和
+  
+  ```json
+  "500.00"
+  ```
+</ResponseField>
+
+<ResponseField name="total_consumed" type="string" required>
+  累计消费金额（元）
+  
+  用户注册以来的所有消费总和
+  
+  ```json
+  "341.50"
+  ```
+</ResponseField>
+
+<ResponseField name="created_at" type="string" required>
+  账户创建时间（北京时间）
+  
+  格式：ISO 8601
+  
+  ```json
+  "2025-01-15T10:30:00+08:00"
+  ```
+</ResponseField>
+
+<ResponseField name="updated_at" type="string" required>
+  账户最后更新时间（北京时间）
+  
+  每次充值或消费后更新
+  
+  ```json
+  "2025-09-30T14:20:00+08:00"
+  ```
+</ResponseField>
+
+## 请求示例
+
+<CodeGroup>
+
+```bash cURL
+curl -X GET https://api.paperpanda.cn/api/v1/billing/balance \
+  -H "Authorization: Bearer ak_xxxxxxxxxxxxxxxx"
+```
+
+```python Python
+import requests
+
+url = "https://api.paperpanda.cn/api/v1/billing/balance"
+headers = {
+    "Authorization": "Bearer ak_xxxxxxxxxxxxxxxx"
+}
+
+response = requests.get(url, headers=headers)
+balance = response.json()
+
+print(f"当前余额: {balance['current_balance']}元")
+print(f"累计充值: {balance['total_recharged']}元")
+print(f"累计消费: {balance['total_consumed']}元")
+```
+
+```javascript JavaScript
+const axios = require('axios');
+
+const getBalance = async () => {
+  try {
+    const response = await axios.get(
+      'https://api.paperpanda.cn/api/v1/billing/balance',
+      {
+        headers: {
+          'Authorization': 'Bearer ak_xxxxxxxxxxxxxxxx'
+        }
+      }
+    );
+
+    const balance = response.data;
+    
+    console.log(`当前余额: ${balance.current_balance}元`);
+    console.log(`累计充值: ${balance.total_recharged}元`);
+    console.log(`累计消费: ${balance.total_consumed}元`);
+  } catch (error) {
+    console.error('查询失败:', error.response?.data || error.message);
+  }
+};
+
+getBalance();
+```
+
+```java Java
+import java.net.http.*;
+import java.net.URI;
+import com.google.gson.Gson;
+
+public class GetBalance {
+    public static void main(String[] args) throws Exception {
+        String apiKey = "ak_xxxxxxxxxxxxxxxx";
+        String url = "https://api.paperpanda.cn/api/v1/billing/balance";
+        
+        // 创建HTTP客户端
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("Authorization", "Bearer " + apiKey)
+            .GET()
+            .build();
+        
+        // 发送请求
+        HttpResponse<String> response = client.send(
+            request, 
+            HttpResponse.BodyHandlers.ofString()
+        );
+        
+        System.out.println("余额信息: " + response.body());
+    }
+}
+```
+
+```go Go
+package main
+
+import (
+    "fmt"
+    "io/ioutil"
+    "net/http"
+)
+
+func main() {
+    apiKey := "ak_xxxxxxxxxxxxxxxx"
+    url := "https://api.paperpanda.cn/api/v1/billing/balance"
+    
+    // 创建请求
+    req, _ := http.NewRequest("GET", url, nil)
+    req.Header.Set("Authorization", "Bearer " + apiKey)
+    
+    // 发送请求
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+    
+    // 读取响应
+    body, _ := ioutil.ReadAll(resp.Body)
+    fmt.Println("余额信息:", string(body))
+}
+```
+
+</CodeGroup>
+
+## 响应示例
+
+<ResponseExample>
+
+```json 成功响应
+{
+  "user_id": 123,
+  "current_balance": "158.50",
+  "total_recharged": "500.00",
+  "total_consumed": "341.50",
+  "created_at": "2025-01-15T10:30:00+08:00",
+  "updated_at": "2025-09-30T14:20:00+08:00"
+}
+```
+
+```json 新用户响应
+{
+  "user_id": 456,
+  "current_balance": "0.00",
+  "total_recharged": "0.00",
+  "total_consumed": "0.00",
+  "created_at": "2025-09-30T15:00:00+08:00",
+  "updated_at": "2025-09-30T15:00:00+08:00"
+}
+```
+
+</ResponseExample>
+
+## 错误码说明
+
+| HTTP状态码 | 说明 | 处理建议 |
+|-----------|------|---------|
+| 401 | API Key无效或已过期 | 检查密钥是否正确，或重新生成密钥 |
+| 403 | 接口访问被禁止 | 联系管理员开通接口权限 |
+| 500 | 服务器内部错误 | 稍后重试，或联系技术支持 |
+
+## 使用场景
+
+<AccordionGroup>
+  <Accordion title="调用付费接口前检查余额">
+    在调用 AIGC 改写等付费接口前，建议先查询余额：
+    
+    ```python
+    # 1. 查询余额
+    balance_response = requests.get(balance_url, headers=headers)
+    balance = float(balance_response.json()['current_balance'])
+    
+    # 2. 预估费用
+    estimated_cost = len(content) / 1000 * unit_price
+    
+    # 3. 判断是否足够
+    if balance >= estimated_cost:
+        # 调用改写接口
+        rewrite_response = requests.post(rewrite_url, ...)
+    else:
+        print(f"余额不足！当前: {balance}元，需要: {estimated_cost}元")
+    ```
+  </Accordion>
+
+  <Accordion title="实现余额监控和预警">
+    定期查询余额，实现余额预警功能：
+    
+    ```python
+    import time
+    
+    def monitor_balance(threshold=50.0):
+        """监控余额，低于阈值时发送预警"""
+        while True:
+            response = requests.get(balance_url, headers=headers)
+            balance = float(response.json()['current_balance'])
+            
+            if balance < threshold:
+                send_alert(f"余额不足预警！当前余额: {balance}元")
+            
+            time.sleep(3600)  # 每小时检查一次
+    ```
+  </Accordion>
+
+  <Accordion title="在界面实时显示余额">
+    为用户提供清晰的余额显示：
+    
+    ```javascript
+    // 页面加载时获取余额
+    async function loadBalance() {
+      const response = await fetch('/api/v1/billing/balance', {
+        headers: { 'Authorization': `Bearer ${apiKey}` }
+      });
+      const data = await response.json();
+      
+      // 更新UI
+      document.getElementById('balance').innerText = 
+        `¥${data.current_balance}`;
+      document.getElementById('total-recharged').innerText = 
+        `累计充值: ¥${data.total_recharged}`;
+      document.getElementById('total-consumed').innerText = 
+        `累计消费: ¥${data.total_consumed}`;
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="计算可用服务次数">
+    根据余额计算还能调用多少次服务：
+    
+    ```python
+    # 获取余额
+    balance_response = requests.get(balance_url, headers=headers)
+    balance = float(balance_response.json()['current_balance'])
+    
+    # 假设单次改写平均费用 0.5 元
+    average_cost = 0.5
+    available_times = int(balance / average_cost)
+    
+    print(f"当前余额可进行约 {available_times} 次改写")
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## 数据精度说明
+
+<Warning>
+  **重要：** 余额字段使用字符串格式而非数字，以保证精度。
+
+  ```python
+  # ✅ 正确做法
+  balance = Decimal(response.json()['current_balance'])
+  
+  # ❌ 避免直接使用float（可能损失精度）
+  balance = float(response.json()['current_balance'])  
+  ```
+</Warning>
+
+在进行金额计算时，建议使用高精度数值类型：
+
+- **Python:** 使用 `decimal.Decimal`
+- **JavaScript:** 使用 `Big.js` 或 `decimal.js`
+- **Java:** 使用 `BigDecimal`
+
+## 时区说明
+
+<Info>
+  所有时间字段均已转换为 **北京时间（UTC+8）**，无需客户端再次转换。
+</Info>
+
+示例时间格式：
+```
+2025-09-30T14:20:00+08:00
+```
+
+解析示例：
+```python
+from datetime import datetime
+
+time_str = "2025-09-30T14:20:00+08:00"
+dt = datetime.fromisoformat(time_str)
+print(dt)  # 2025-09-30 14:20:00+08:00
+```
+
+## 最佳实践
+
+### 1. 缓存余额信息
+
+避免频繁查询，合理使用缓存：
+
+```python
+import time
+
+class BalanceCache:
+    def __init__(self, ttl=300):  # 缓存5分钟
+        self.balance = None
+        self.last_update = 0
+        self.ttl = ttl
+    
+    def get_balance(self):
+        now = time.time()
+        if not self.balance or (now - self.last_update) > self.ttl:
+            # 缓存过期，重新获取
+            response = requests.get(balance_url, headers=headers)
+            self.balance = response.json()
+            self.last_update = now
+        return self.balance
+```
+
+### 2. 错误处理
+
+完善的错误处理机制：
+
+```python
+def get_balance_safe():
+    """安全地获取余额，包含重试和错误处理"""
+    max_retries = 3
+    
+    for i in range(max_retries):
+        try:
+            response = requests.get(
+                balance_url, 
+                headers=headers,
+                timeout=10
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.Timeout:
+            if i == max_retries - 1:
+                raise Exception("查询超时，请检查网络")
+            time.sleep(1)
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 401:
+                raise Exception("API Key无效，请检查")
+            raise
+```
+
+### 3. 余额变化监听
+
+监听余额变化，及时更新UI：
+
+```javascript
+class BalanceMonitor {
+  constructor(apiKey, onUpdate) {
+    this.apiKey = apiKey;
+    this.onUpdate = onUpdate;
+    this.lastBalance = null;
+  }
+  
+  async start(interval = 30000) {  // 30秒检查一次
+    setInterval(async () => {
+      const balance = await this.fetchBalance();
+      
+      if (this.lastBalance && 
+          balance.current_balance !== this.lastBalance.current_balance) {
+        // 余额发生变化
+        this.onUpdate(balance, this.lastBalance);
+      }
+      
+      this.lastBalance = balance;
+    }, interval);
+  }
+  
+  async fetchBalance() {
+    const response = await fetch('/api/v1/billing/balance', {
+      headers: { 'Authorization': `Bearer ${this.apiKey}` }
+    });
+    return response.json();
+  }
+}
+
+// 使用示例
+const monitor = new BalanceMonitor(apiKey, (newBalance, oldBalance) => {
+  console.log(`余额变化: ${oldBalance.current_balance} -> ${newBalance.current_balance}`);
+  updateUI(newBalance);
+});
+
+monitor.start();
+```
+
+## 相关接口
+
+<CardGroup cols={2}>
+  <Card title="充值记录" icon="credit-card" href="/api-reference/billing/recharge">
+    查看充值历史记录
+  </Card>
+  <Card title="消费记录" icon="receipt" href="/api-reference/billing/consumption">
+    查看消费历史记录
+  </Card>
+  <Card title="AIGC改写" icon="wand-magic-sparkles" href="/api-reference/aigc/rewrite">
+    使用余额进行文本改写
+  </Card>
+  <Card title="API密钥管理" icon="key" href="/api-reference/api-keys/list">
+    管理您的API密钥
+  </Card>
+</CardGroup>
+
+## 常见问题
+
+<AccordionGroup>
+  <Accordion title="为什么余额显示为字符串而不是数字？">
+    使用字符串格式可以避免浮点数精度问题。金融数据对精度要求极高，使用字符串+高精度库（如Decimal）是业界最佳实践。
+  </Accordion>
+
+  <Accordion title="余额更新的延迟是多少？">
+    余额更新是实时的。当您充值或消费后，立即调用此接口即可获得最新余额。
+  </Accordion>
+
+  <Accordion title="如何计算可用余额能做多少次改写？">
+    ```python
+    # 预估计算
+    average_chars = 5000  # 平均字符数
+    price_per_1000 = 10   # 每千字价格（根据实际服务类型）
+    
+    cost_per_rewrite = (average_chars / 1000) * price_per_1000
+    available_times = int(balance / cost_per_rewrite)
+    ```
+  </Accordion>
+
+  <Accordion title="余额为负数是什么情况？">
+    系统支持欠费保护机制。当余额不足但服务已完成时，会创建欠费订单，余额可能变为负数。充值回正后，可以查看欠费期间的处理结果。
+  </Accordion>
+</AccordionGroup>
+
+## 技术支持
+
+遇到问题？我们随时为您提供帮助：
+
+- 📧 邮箱：support@paperpanda.cn
+- 📚 完整文档：https://api.paperpanda.cn/docs
+- 💬 在线客服：平台右下角
