@@ -1,27 +1,23 @@
 ---
-title: 'API 文档介绍'
-description: '熊猫论文 开放API平台 - 接口文档与使用指南'
+title: "API 文档介绍"
+description: "熊猫论文 开放API平台 - 接口文档与使用指南"
 ---
 
 ## 欢迎使用 API
 
 熊猫论文，提供强大的 AIGC 文本改写服务和完善的账户管理功能。通过我们的 API，您可以轻松集成智能文本改写能力到您的应用中。
 
-<Card
-  title="查看 OpenAPI 规范"
-  icon="file-code"
-  href="https://github.com/paperpanda/api-docs/blob/main/openapi-paper-panda.json"
->
+<Card icon="file-code" href="https://github.com/paperpanda/api-docs/blob/main/openapi-paper-panda.json" title="查看 OpenAPI 规范">
   查看完整的 OpenAPI 3.1 规范文件
 </Card>
 
 ## 核心功能
 
 <CardGroup cols={2}>
-  <Card title="AIGC文本改写" icon="wand-magic-sparkles" href="/api-reference/endpoint/rewrite">
+  <Card icon="wand-magic-sparkles" href="/api-reference/endpoint/rewrite" title="AIGC文本改写">
     智能改写文本，支持降AI率、降重率等多种模式
   </Card>
-  <Card title="账户余额查询" icon="wallet" href="/api-reference/endpoint/balance">
+  <Card icon="wallet" href="/api-reference/endpoint/balance" title="账户余额查询">
     查询用户账户余额、充值和消费记录
   </Card>
 </CardGroup>
@@ -54,11 +50,11 @@ curl https://paperpanda.cn/api/v1/aigc/rewrite \
 
 ## 请求限制
 
-| 限制类型 | 默认值 | 说明 |
-|---------|--------|------|
-| QPM（每分钟请求数） | 10次/分钟 | 可通过申请提升配额 |
-| 单次文本长度 | 20,000字符 | AIGC改写接口 |
-| 并发请求数 | 3个 | 同一用户同时处理的请求数 |
+| 限制类型        | 默认值      | 说明           |
+| ----------- | -------- | ------------ |
+| QPM（每分钟请求数） | 10次/分钟   | 可通过申请提升配额    |
+| 单次文本长度      | 20,000字符 | AIGC改写接口     |
+| 并发请求数       | 3个       | 同一用户同时处理的请求数 |
 
 <Tip>
   如需提升 QPM 配额，请在"API密钥管理"页面申请升级，管理员将在1-3个工作日内审核。
@@ -77,12 +73,12 @@ AIGC改写服务按照实际处理的字符数进行计费：
 
 ### 服务类型价格
 
-| 服务类型 | 说明 | 参考价格 |
-|---------|------|---------|
-| ai-reduce-value | 降AI超值版 | 按字数计费 |
-| ai-reduce | 降AI标准版 | 按字数计费 |
-| duplicate-reduce | 降重 | 按字数计费 |
-| ai-duplicate | 降AI+降重 | 按字数计费 |
+| 服务类型             | 说明      | 参考价格  |
+| ---------------- | ------- | ----- |
+| ai-reduce-value  | 降AI-英文版 | 按字数计费 |
+| ai-reduce        | 降AI-中文版 | 按字数计费 |
+| duplicate-reduce | 降重      | 按字数计费 |
+| ai-duplicate     | 降AI+降重  | 按字数计费 |
 
 <Note>
   具体价格请在平台配置中查看，价格可能根据改写类型有所不同。
@@ -112,14 +108,14 @@ AIGC改写服务按照实际处理的字符数进行计费：
 
 ### 常见错误码
 
-| HTTP状态码 | 说明 |
-|-----------|------|
-| 200 | 请求成功 |
-| 400 | 请求参数错误（如余额不足） |
-| 401 | 未授权（API Key无效或过期） |
-| 403 | 禁止访问（接口未开放） |
-| 429 | 请求过于频繁（超出QPM限制） |
-| 500 | 服务器内部错误 |
+| HTTP状态码 | 说明                |
+| ------- | ----------------- |
+| 200     | 请求成功              |
+| 400     | 请求参数错误（如余额不足）     |
+| 401     | 未授权（API Key无效或过期） |
+| 403     | 禁止访问（接口未开放）       |
+| 429     | 请求过于频繁（超出QPM限制）   |
+| 500     | 服务器内部错误           |
 
 ## 最佳实践
 
@@ -131,21 +127,18 @@ AIGC改写服务按照实际处理的字符数进行计费：
     - 收到429错误后，等待1分钟再重试
     - 合理分配QPM配额
   </Accordion>
-
   <Accordion title="如何避免余额不足？">
     - 在调用前先查询余额
     - 预估费用并预留足够余额
     - 设置余额预警通知
     - 及时充值
   </Accordion>
-
   <Accordion title="如何提高API调用成功率？">
     - 妥善保管API Key
     - 定期检查密钥状态
     - 合理设置重试机制
     - 处理各类错误响应
   </Accordion>
-
   <Accordion title="如何优化改写质量？">
     - 选择合适的改写类型
     - 文本长度控制在合理范围
@@ -157,10 +150,10 @@ AIGC改写服务按照实际处理的字符数进行计费：
 ## 技术支持
 
 <CardGroup cols={2}>
-  <Card title="API文档" icon="book" href="https://paperpanda.cn/docs">
+  <Card icon="book" href="https://paperpanda.cn/docs" title="API文档">
     查看完整的交互式API文档
   </Card>
-  <Card title="技术支持" icon="envelope" href="mailto:support@paperpanda.cn">
+  <Card icon="envelope" href="mailto:support@paperpanda.cn" title="技术支持">
     联系我们的技术团队
   </Card>
 </CardGroup>
@@ -177,6 +170,4 @@ AIGC改写服务按照实际处理的字符数进行计费：
 
 ---
 
-**文档版本：** v1.0.0
-**最后更新：** 2025年9月30日
-**维护团队：** Paper Panda开发团队
+**文档版本：** v1.0.0 **最后更新：** 2025年9月30日 **维护团队：** Paper Panda开发团队
