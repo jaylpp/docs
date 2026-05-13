@@ -20,7 +20,7 @@ AIGC文本改写接口是 Paper Panda 的核心服务，提供基于大语言模
 <ParamField header="Authorization" type="string" required>
   Bearer Token认证，支持API Key或JWT Token
 
-  ```
+  ```text
   Authorization: Bearer ak_xxxxxxxxxxxxxxxx
   ```
 </ParamField>
@@ -30,7 +30,7 @@ AIGC文本改写接口是 Paper Panda 的核心服务，提供基于大语言模
 <ParamField body="content" type="string" required>
   要改写的文本内容
 
-  - **长度限制：** 1-20,000 字符
+  - **长度限制：** 50-6,000 字符
   - **编码：** UTF-8
   - **格式：** 纯文本，无需特殊格式
 
@@ -42,33 +42,33 @@ AIGC文本改写接口是 Paper Panda 的核心服务，提供基于大语言模
 <ParamField body="service_type" type="string" required>
   服务类型，决定改写策略和价格
 
-  | 值                  | 说明      | 适用场景    |
-  | ------------------ | ------- | ------- |
-  | `ai-reduce-value`  | 降AI-英文版 | 标准降AI服务 |
-  | `ai-reduce`        | 降AI-中文版 | 标准降AI服务 |
-  | `duplicate-reduce` | 降重      | 专注降低重复率 |
-  | `ai-duplicate`     | 降AI+降重  | 双重优化    |
-  | `advance`          | 高级咨询    | 定制化改写   |
+  | 值 | 说明 | 适用场景 |
+  | --- | --- | --- |
+  | `ai-reduce-value` | 降AI-英文版 | 标准降AI服务 |
+  | `ai-reduce` | 降AI-中文版 | 标准降AI服务 |
+  | `duplicate-reduce` | 降重 | 专注降低重复率 |
+  | `ai-duplicate` | 降AI\+降重 | 双重优化 |
+  | `advance` | 高级咨询 | 定制化改写 |
 </ParamField>
 
 <ParamField body="rewrite_type" type="integer" required>
   改写类型ID，决定具体的改写算法
 
-  | ID | 名称         | 说明              |
-  | --- | ---------- | --------------- |
-  | 1  | 知网降AI      | 适合知网的AI降重/降AI改写 |
-  | 2  | 维普降AI      | 适合维普的AI降重/降AI改写 |
-  | 3  | 通用降AI      | 通用场景AI降重/降AI改写  |
-  | 5  | 通用降重       | 通用场景降重服务        |
-  | 6  | 格子达降AI     | 格子达场景降AI改写      |
-  | 7  | 双降知网       | 知网场景同时降AI+降重    |
-  | 8  | 双降维普       | 维普场景同时降AI+降重    |
-  | 9  | 双降通用       | 通用场景同时降AI+降重    |
-  | 10 | 双降格子达      | 格子达场景同时降AI+降重   |
-  | 11 | 朱雀降AI      | 朱雀平台AI降重/降AI改写  |
-  | 12 | 特价降AI      | 特价降AI           |
-  | 4  | 降AI-知网-英文版 |                 |
-  | 13 | 降AI-维普-英文版 |                 |
+  | ID | 名称 | 说明 |
+  | --- | --- | --- |
+  | 1 | 知网降AI | 适合知网的AI降重/降AI改写 |
+  | 2 | 维普降AI | 适合维普的AI降重/降AI改写 |
+  | 3 | 通用降AI | 通用场景AI降重/降AI改写 |
+  | 5 | 通用降重 | 通用场景降重服务 |
+  | 6 | 格子达降AI | 格子达场景降AI改写 |
+  | 7 | 双降知网 | 知网场景同时降AI\+降重 |
+  | 8 | 双降维普 | 维普场景同时降AI\+降重 |
+  | 9 | 双降通用 | 通用场景同时降AI\+降重 |
+  | 10 | 双降格子达 | 格子达场景同时降AI\+降重 |
+  | 11 | 朱雀降AI | 朱雀平台AI降重/降AI改写 |
+  | 12 | 特价降AI | 特价降AI |
+  | 4 | 降AI-知网-英文版 |  |
+  | 13 | 降AI-维普-英文版 |  |
 
   <Tip>
     **推荐选择：** 大多数场景使用 `rewrite_type=1`（标准改写）或 `rewrite_type=3`（通用改写）
@@ -123,7 +123,6 @@ curl -X POST https://paperpanda.cn/api/v1/aigc/rewrite \
   }'
 ```
 
-
 ```python Python
 import requests
 
@@ -147,7 +146,6 @@ if result["code"] == 200:
 else:
     print(f"改写失败: {result['message']}")
 ```
-
 
 ```javascript JavaScript
 const axios = require('axios');
@@ -184,7 +182,6 @@ const rewriteText = async () => {
 
 rewriteText();
 ```
-
 
 ```java Java
 import java.net.http.*;
@@ -240,7 +237,6 @@ public class AigcRewrite {
 }
 ```
 
-
 ```json 欠费响应
 {
   "amount": 47.58,
@@ -249,7 +245,6 @@ public class AigcRewrite {
   "message": "处理完成, 因已欠费, 需充值回正后, 进入右侧「生成记录」页面查看结果!"
 }
 ```
-
 
 ```json 失败响应
 {
@@ -264,13 +259,13 @@ public class AigcRewrite {
 
 ## 错误码说明
 
-| HTTP状态码 | 说明        | 处理建议             |
-| ------- | --------- | ---------------- |
-| 400     | 余额不足      | 请先充值             |
-| 400     | 参数验证失败    | 检查请求参数           |
-| 401     | API Key无效 | 检查密钥是否正确或过期      |
-| 429     | 超出QPM限制   | 等待1分钟后重试，或申请提升配额 |
-| 500     | AI服务异常    | 稍后重试，或联系技术支持     |
+| HTTP状态码 | 说明 | 处理建议 |
+| --- | --- | --- |
+| 400 | 余额不足 | 请先充值 |
+| 400 | 参数验证失败 | 检查请求参数 |
+| 401 | API Key无效 | 检查密钥是否正确或过期 |
+| 429 | 超出QPM限制 | 等待1分钟后重试，或申请提升配额 |
+| 500 | AI服务异常 | 稍后重试，或联系技术支持 |
 
 ## 计费规则
 
@@ -306,8 +301,8 @@ public class AigcRewrite {
 
 ### 文本长度
 
-- 最小长度：1 字符
-- 最大长度：20,000 字符
+- 最小长度：50 字符
+- 最大长度：6,000 字符
 - 超出限制返回 422 参数验证错误
 
 ## 最佳实践
@@ -323,6 +318,7 @@ public class AigcRewrite {
 
     **性价比优先：** 使用 `service_type=ai-reduce-value`
   </Accordion>
+
   <Accordion title="如何处理大批量改写？">
     **建议方案：**
 
@@ -332,6 +328,7 @@ public class AigcRewrite {
     4. 遵守QPM限制
     5. 实现重试机制（失败后等待重试）
   </Accordion>
+
   <Accordion title="如何提高改写质量？">
     **优化建议：**
 
@@ -341,6 +338,7 @@ public class AigcRewrite {
     - 选择匹配的改写类型
     - 多次改写取最佳结果
   </Accordion>
+
   <Accordion title="如何避免欠费？">
     **预防措施：**
 
@@ -355,7 +353,7 @@ public class AigcRewrite {
 ## 相关接口
 
 <CardGroup cols={1}>
-  <Card icon="wallet" href="/api-reference/endpoint/balance" title="查询余额">
+  <Card title="查询余额" icon="wallet" href="/api-reference/endpoint/balance">
     改写前查询账户余额
   </Card>
 </CardGroup>
@@ -365,5 +363,5 @@ public class AigcRewrite {
 遇到问题？我们随时为您提供帮助：
 
 - 📧 邮箱：[support@paperpanda.cn](mailto:support@paperpanda.cn)
-- 📚 完整文档：https://paperpanda.cn/docs
+- 📚 完整文档：[https://paperpanda.cn/docs](https://paperpanda.cn/docs)
 - 💬 在线客服：平台右下角
